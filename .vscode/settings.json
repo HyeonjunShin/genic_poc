@@ -1,0 +1,12 @@
+{
+    "cmake.ignoreCMakeListsMissing": true,
+    "clangd.path": "/usr/bin/clangd",
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.intelliSenseEngine": "disabled",
+
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.formatOnSave": true
+    },
+    
+}

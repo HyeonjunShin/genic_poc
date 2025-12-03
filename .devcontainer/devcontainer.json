@@ -1,0 +1,38 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Ubuntu",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"llvm-vs-code-extensions.vscode-clangd"
+			]
+		}
+	},
+	"runArgs": [
+		// "--rm",
+		"-it",
+		"--gpus", "all",
+		"--volume=/tmp/.X11-unix:/tmp/.X11-unix:rw",
+		// "--device-cgroup-rule=c 188:* rmw"
+		"--device=/dev/ttyUSB0", // mount host usb device to container
+		"--group-add", "dialout" // admit host usb authority
+
+	// WARNING: devcontainer apply auto 
+	// 	"-e", "DISPLAY=$DISPLAY",
+	// "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+	],
+	"containerEnv": {
+		"DISPLAY": ":1.0",
+		"XDG_RUNTIME_DIR": "/tmp/runtime-vscode"
+	},
+	"remoteUser": "vscode"
+
+
+}

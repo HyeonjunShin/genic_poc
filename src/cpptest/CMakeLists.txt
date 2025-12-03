@@ -30,9 +30,9 @@ target_link_libraries(monitor
   realtime_graph
 )
 
-add_executable(publisher src/publisher.cpp)
-ament_target_dependencies(publisher rclcpp std_msgs)
-target_link_libraries(publisher 
+add_executable(serial_reader_node src/serial_reader_node.cpp)
+ament_target_dependencies(serial_reader_node rclcpp std_msgs)
+target_link_libraries(serial_reader_node 
   serial
 )
 
@@ -41,7 +41,7 @@ ament_target_dependencies(subscriber rclcpp std_msgs)
 
 install(TARGETS
   monitor
-  publisher
+  serial_reader_node
   subscriber
   DESTINATION lib/${PROJECT_NAME})
 

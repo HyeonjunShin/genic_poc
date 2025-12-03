@@ -2,11 +2,13 @@
 #include "logger.hpp"
 #include "piezo_serial.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/int32.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "std_msgs/msg/u_int8_multi_array.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
+#include <std_msgs/msg/detail/int32__struct.hpp>
 #include <std_msgs/msg/detail/string__struct.hpp>
 #include <std_msgs/msg/detail/u_int8_multi_array__struct.hpp>
 #include <sys/types.h>
@@ -18,8 +20,13 @@ public:
   SerialReaderNode(std::string devName, std::string outputDir)
       : Node("serial_reader"), piezoSerial(devName), logger(outputDir) {
 
-    publisher_ = this->create_publisher<std_msgs::msg::UInt8MultiArray>(
+    pubSerial = this->create_publisher<std_msgs::msg::UInt8MultiArray>(
         "sensor/raw", 10);
+
+    subRobotStatus = this->create_subscription<std_msgs::msg::Int32>(
+        "/robot/step_status", 10,
+        std::bind(&SerialReaderNode::callbackRobotStatus, this,
+                  std::placeholders::_1));
 
     piezoSerial.addCallback(
         [&](PacketStruct packet) -> void { logger.appendData(packet); });
@@ -30,7 +37,7 @@ public:
       std_msgs::msg::UInt8MultiArray message = std_msgs::msg::UInt8MultiArray();
       message.data.resize(sizeof(PacketStruct));
       memcpy(message.data.data(), &packet, sizeof(PacketStruct));
-      publisher_->publish(message);
+      pubSerial->publish(message);
 
       // auto message = std_msgs::msg::String();
       // message.data.resize(sizeof(PacketStruct));
@@ -63,10 +70,17 @@ public:
     logger.stop();
   }
 
+  void callbackRobotStatus(const std_msgs::msg::Int32::SharedPtr msg) {
+    RCLCPP_INFO(this->get_logger(), "Received: %d", msg->data);
+    stepStatus = msg->data;
+  }
+
 private:
+  int32_t stepStatus;
   PiezoSerial piezoSerial;
   Logger logger;
-  rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr publisher_;
+  rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr pubSerial;
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subRobotStatus;
 };
 
 int main(int argc, char *argv[]) {

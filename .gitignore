@@ -34,3 +34,5 @@ AMENT_IGNORE
 
 .cache/
 output/
+
+data/

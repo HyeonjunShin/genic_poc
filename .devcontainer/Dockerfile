@@ -43,8 +43,9 @@ RUN wget https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
     apt-get install -y python3-pip && \
     pip install --upgrade pip  && \
-    pip install -y pyside6 \
-        x11-apps \
+    pip install pyside6
+    
+RUN apt-get install -y x11-apps \
         libx11-xcb1 \
         libxcb1 \
         libxcb-render0 \

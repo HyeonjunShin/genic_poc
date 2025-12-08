@@ -31,13 +31,35 @@ RUN wget https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh \
     && ln -s /usr/bin/clangd-21 /usr/bin/clangd 
 
 # cuda toolkit
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
-&& mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
-&& wget https://developer.download.nvidia.com/compute/cuda/13.0.2/local_installers/cuda-repo-ubuntu2204-13-0-local_13.0.2-580.95.05-1_amd64.deb \
-&& dpkg -i cuda-repo-ubuntu2204-13-0-local_13.0.2-580.95.05-1_amd64.deb \
-&& cp /var/cuda-repo-ubuntu2204-13-0-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
-&& apt-get update \
-&& apt-get -y install cuda-toolkit-13-0
+# RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin \
+# && mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
+# && wget https://developer.download.nvidia.com/compute/cuda/13.0.2/local_installers/cuda-repo-ubuntu2204-13-0-local_13.0.2-580.95.05-1_amd64.deb \
+# && dpkg -i cuda-repo-ubuntu2204-13-0-local_13.0.2-580.95.05-1_amd64.deb \
+# && cp /var/cuda-repo-ubuntu2204-13-0-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
+# && apt-get update \
+# && apt-get -y install cuda-toolkit-13-0
+
+# Python3 and PySide6
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
+    apt-get install -y python3-pip && \
+    pip install --upgrade pip  && \
+    pip install -y pyside6 \
+        x11-apps \
+        libx11-xcb1 \
+        libxcb1 \
+        libxcb-render0 \
+        libxcb-shape0 \
+        libxcb-xfixes0 \
+        libxcb-cursor0 \
+        libxcb-keysyms1 \
+        libxkbcommon-x11-0 \
+        libxcb-util1 \
+        libglu1-mesa \
+        libgl1-mesa-glx \
+        libgl1-mesa-dri \
+        mesa-utils \
+        libglvnd0 \
+        libglvnd-dev
 
 # Using non-root system
 ARG USERNAME=vscode
